@@ -31,13 +31,13 @@ Sample JSON Object :
 3. Execute the script
 
 `
-node index.js --data <BASE64_ENCODED_JSON_STRING> --printerip tcp://<EPSON_THERMAL_PRINTER_IP_ADDRESS>
+node cli.js --data <BASE64_ENCODED_JSON_STRING> --printerip tcp://<EPSON_THERMAL_PRINTER_IP_ADDRESS>
 `
 
 Example :
 
 `
-node index.js --data eyJMb2NhdGlvbiI6IlBhbGEiLCJUbyI6IkFidSBUaG9wcGFuIiwiUmVmTm8iOiIxMjM0NTUiLCJEYXRlVGltZSI6bnVsbCwiSXRlbXMiOltbIjIgeCBJdGVtIDEgQCAyMzAiLCI0NjAiXSxbIjUgeCBJdGVtIDIgQCAyMDAiLCIxMDAwIl1dLCJUb3RhbCI6IjE0NjAiLCJEaXNjb3VudCI6IjEwMCIsIkdyYW5kVG90YWwiOiIxMzYwIn0= --printerip tcp://192.168.192.168
+node cli.js --data eyJMb2NhdGlvbiI6IlBhbGEiLCJUbyI6IkFidSBUaG9wcGFuIiwiUmVmTm8iOiIxMjM0NTUiLCJEYXRlVGltZSI6bnVsbCwiSXRlbXMiOltbIjIgeCBJdGVtIDEgQCAyMzAiLCI0NjAiXSxbIjUgeCBJdGVtIDIgQCAyMDAiLCIxMDAwIl1dLCJUb3RhbCI6IjE0NjAiLCJEaXNjb3VudCI6IjEwMCIsIkdyYW5kVG90YWwiOiIxMzYwIn0= --printerip tcp://192.168.192.168
 `
 
 Please not that the printerip parameter is optional. If not provided it will connect to `tcp://192.168.192.168` by default.
