@@ -3,7 +3,8 @@ const app = express();
 const port = 3000;
 const thermalPrinter = require('./thermalPrinter.js')
 const bodyParser = require('body-parser');
-
+const cors = require('cors');
+app.use(cors());
 app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
