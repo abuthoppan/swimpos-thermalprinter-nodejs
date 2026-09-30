@@ -9,8 +9,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.19.2",
     "minimist": "^1.2.8",
-    "node-thermal-printer": "^4.4.1"
+    "node-thermal-printer": "^4.4.1",
+    "node-windows": "^1.0.0-beta.8"
   }
 }
