@@ -94,8 +94,11 @@ async function thermalPrint(DATA, PRINTER_IP) {
     ]);
     printer.bold(false);
     printer.drawLine();
+    // A receipt may legitimately have no line items. Keep the existing output
+    // for valid arrays and render the receipt without item rows otherwise.
+    const items = Array.isArray(DATA.Items) ? DATA.Items : [];
     let i = 0;
-    DATA.Items.forEach(r => {
+    items.forEach(r => {
         printer.tableCustom([
             { text: `${++i}`, align: 'LEFT', cols: 8 },
             { text: `${r[0]}`, align: 'LEFT', cols: 32 },
