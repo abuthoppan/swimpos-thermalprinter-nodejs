@@ -2,6 +2,27 @@ const { ThermalPrinter, PrinterTypes, CharacterSet, BreakLine } = require('node-
 const fs = require('fs');
 const net = require('net');
 
+const DEFAULT_COMPANY_NAME = "Thoppans' Swimming Centre\nYMCA complex, Thodupuzha";
+
+function printCompanyName(printer, companyName) {
+    const name = typeof companyName === 'string' && companyName.trim()
+        ? companyName
+        : DEFAULT_COMPANY_NAME;
+    const [primaryLine, ...secondaryLines] = name.split(/\r?\n/);
+
+    printer.alignCenter();
+    printer.bold(true);
+    printer.setTextDoubleHeight();
+    printer.println(primaryLine.trim());
+    printer.setTextNormal();
+
+    secondaryLines.forEach((line) => {
+        if (line.trim()) printer.println(line.trim());
+    });
+
+    printer.bold(false);
+}
+
 // node-thermal-printer 4.4.1 sends network data but does not resolve its
 // Promise unless the printer sends a response.  Receipt printers normally do
 // not send one for a print job, which leaves the HTTP request open forever.
@@ -65,8 +86,7 @@ async function thermalPrint(DATA, PRINTER_IP) {
     const isConnected = await printer.isPrinterConnected();
     console.log('Printer connected:', isConnected);
 
-    printer.alignCenter();
-    await printer.printImage('./logo.png');
+    printCompanyName(printer, DATA.CompanyName);
     printer.setTextNormal();
     printer.bold(true);
     if (DATA.Location)
