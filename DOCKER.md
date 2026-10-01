@@ -128,14 +128,19 @@ Send a `POST` request to `http://localhost:3000/print`:
 
 ```json
 {
-  "data": { "Location": "Demo Site", "Items": [] },
+  "data": {
+    "Headline": "Thoppans' Swimming Centre\nYMCA complex, Thodupuzha",
+    "Location": "Demo Site",
+    "Items": []
+  },
   "printer_ip": "tcp://<EPSON_THERMAL_PRINTER_IP_ADDRESS>"
 }
 ```
 
 Replace `<EPSON_THERMAL_PRINTER_IP_ADDRESS>` with the printer's network IP.
 An `Items` field is optional; an empty or omitted list prints a receipt without
-line-item rows.
+line-item rows. `Headline` is optional; if omitted, the configured Thoppans
+headline is printed.
 
 ## Operations
 

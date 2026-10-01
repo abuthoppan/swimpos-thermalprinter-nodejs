@@ -2,12 +2,12 @@ const { ThermalPrinter, PrinterTypes, CharacterSet, BreakLine } = require('node-
 const fs = require('fs');
 const net = require('net');
 
-const DEFAULT_COMPANY_NAME = "Thoppans' Swimming Centre\nYMCA complex, Thodupuzha";
+const DEFAULT_HEADLINE = "Thoppans' Swimming Centre\nYMCA complex, Thodupuzha";
 
-function printCompanyName(printer, companyName) {
-    const name = typeof companyName === 'string' && companyName.trim()
-        ? companyName
-        : DEFAULT_COMPANY_NAME;
+function printHeadline(printer, headline) {
+    const name = typeof headline === 'string' && headline.trim()
+        ? headline
+        : DEFAULT_HEADLINE;
     const [primaryLine, ...secondaryLines] = name.split(/\r?\n/);
 
     printer.alignCenter();
@@ -86,7 +86,7 @@ async function thermalPrint(DATA, PRINTER_IP) {
     const isConnected = await printer.isPrinterConnected();
     console.log('Printer connected:', isConnected);
 
-    printCompanyName(printer, DATA.CompanyName);
+    printHeadline(printer, DATA.Headline);
     printer.setTextNormal();
     printer.bold(true);
     if (DATA.Location)
