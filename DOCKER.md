@@ -1,108 +1,183 @@
 # Docker Setup Guide for swimpos-thermalprinter-nodejs
 
-This guide will help you build and run the swimpos-thermalprinter-nodejs application using Docker.
+This project uses Docker Compose to run the thermal-printer service. Compose
+keeps the existing `3000:3000` port mapping and automatically restarts the
+service if Node.js crashes, the container exits unexpectedly, or the machine
+and Docker service restart.
 
 ## Prerequisites
-- Docker must be installed on your system. Download from: https://www.docker.com/products/docker-desktop
 
-## Steps
+- Docker Engine or Docker Desktop with Docker Compose v2 installed.
+- Network access from the Docker host to the thermal printer on port `9100`.
 
-### 1. Clone or copy the project files
-Make sure all project files, including `Dockerfile` and `.dockerignore`, are present in a directory.
+## Run from source code
 
-### 2. Build the Docker image
-Open a terminal in the project directory and run:
+1. Copy or clone the complete project folder. Ensure it includes `Dockerfile`,
+   `docker-compose.yml`, `package.json`, and the application files.
+2. Open a terminal in the project folder.
+3. Start or update the service:
 
+   ```bash
+   docker compose up -d --build
+   ```
+
+4. Confirm that it is running:
+
+   ```bash
+   docker compose ps
+   ```
+
+5. Test the server at:
+
+   ```text
+   http://localhost:3000/
+   ```
+
+   The response should be `Hello World!`.
+
+## Install from a pre-built image (installation team)
+
+Use this option when the installation team should deploy the application
+without receiving the source code or building an image on the customer
+computer.
+
+### Create the installation package
+
+On the development machine, from the project folder, build the image and save
+it as a portable archive:
+
+```bash
+docker compose build
+docker save -o swimpos-thermalprinter.tar swimpos-thermalprinter:latest
 ```
-docker build -t swimpos-thermalprinter .
+
+Give the installation team these three files:
+
+```text
+swimpos-thermalprinter.tar
+docker-compose.yml
+DOCKER.md
 ```
 
-This command builds a Docker image named `swimpos-thermalprinter`.
+### Install on the customer computer
 
-### 3. Run the Docker container
-Start the application container with:
+1. Install Docker Engine or Docker Desktop with Docker Compose v2.
+2. Copy the three installation-package files into one folder.
+3. Open a terminal in that folder and load the supplied image:
 
+   ```bash
+   docker load -i swimpos-thermalprinter.tar
+   ```
+
+4. Start the already-loaded image. The `--no-build` option is important: the
+   customer computer has the pre-built image and does not need the source code
+   or Dockerfile.
+
+   ```bash
+   docker compose up -d --no-build
+   ```
+
+5. Confirm that the service is running:
+
+   ```bash
+   docker compose ps
+   ```
+
+6. Confirm the server responds at `http://localhost:3000/`.
+
+To upgrade later, provide a new `.tar` image and run:
+
+```bash
+docker compose down
+docker load -i swimpos-thermalprinter.tar
+docker compose up -d --no-build
 ```
+
+## Migrating from the previous `docker run` command
+
+If the service was originally started with:
+
+```bash
 docker run -d -p 3000:3000 --name swimpos-thermalprinter swimpos-thermalprinter
 ```
 
-- `-d` runs the container in detached mode.
-- `-p 3000:3000` maps port 3000 of the container to port 3000 on your host.
-- `--name swimpos-thermalprinter` names your container for easy management.
+run these commands once from the project folder. They replace only the
+existing printer-service container with the Compose-managed container:
 
-### 4. Test the server
-Open your browser or use curl/Postman to access:
-
-```
-http://localhost:3000/
+```bash
+docker stop swimpos-thermalprinter
+docker rm swimpos-thermalprinter
+docker compose up -d --build
 ```
 
-You should see `Hello World!` as a response.
+## Automatic restart behavior
 
-### 5. Print a bill
-Send a POST request to `http://localhost:3000/print` with the required JSON body:
+The `docker-compose.yml` file uses `restart: unless-stopped`.
 
-```
+- If Node.js crashes or the container stops unexpectedly, Docker restarts it.
+- If the computer or Docker service restarts, Docker starts the container.
+- If an administrator intentionally stops the container, it stays stopped
+  until it is started again.
+
+The configured health check reports whether `http://localhost:3000/` responds.
+It is a status signal; Docker restarts containers when their process exits.
+
+## Print a bill
+
+Send a `POST` request to `http://localhost:3000/print`:
+
+```json
 {
-  "data": { ... },
+  "data": { "Location": "Demo Site", "Items": [] },
   "printer_ip": "tcp://<EPSON_THERMAL_PRINTER_IP_ADDRESS>"
 }
 ```
 
-Replace `<EPSON_THERMAL_PRINTER_IP_ADDRESS>` with your printer's IP address.
+Replace `<EPSON_THERMAL_PRINTER_IP_ADDRESS>` with the printer's network IP.
+An `Items` field is optional; an empty or omitted list prints a receipt without
+line-item rows.
 
----
+## Operations
 
-## How to Set Up and Run on Customer System
+View live logs:
 
-You can set up this application on your customer’s computer in two ways:
+```bash
+docker compose logs -f
+```
 
-### Option 1: Using Source Code (Recommended for VS Code Users)
-1. **Copy the project folder** (including all files, Dockerfile, and DOCKER.md) to the customer’s computer.
-2. Open the folder in VS Code.
-3. Make sure Docker Desktop is installed and running.
-4. Open a terminal in VS Code (or use Command Prompt/PowerShell in the project folder).
-5. Build the Docker image:
-   ```
-   docker build -t swimpos-thermalprinter .
-   ```
-6. Run the Docker container:
-   ```
-   docker run -d -p 3000:3000 --name swimpos-thermalprinter swimpos-thermalprinter
-   ```
-7. The application is now running and accessible at http://localhost:3000/
+Check service status and health:
 
-### Option 2: Using a Pre-built Docker Image
-1. On your (developer) machine, build the image:
-   ```
-   docker build -t swimpos-thermalprinter .
-   docker save -o swimpos-thermalprinter.tar swimpos-thermalprinter
-   ```
-2. Transfer the `swimpos-thermalprinter.tar` file to the customer’s computer (USB, email, file share, etc).
-3. On the customer’s computer, load the image:
-   ```
-   docker load -i swimpos-thermalprinter.tar
-   ```
-4. Run the Docker container:
-   ```
-   docker run -d -p 3000:3000 --name swimpos-thermalprinter swimpos-thermalprinter
-   ```
-5. The application is now running and accessible at http://localhost:3000/
+```bash
+docker compose ps
+```
 
----
+Restart the service manually:
+
+```bash
+docker compose restart
+```
+
+Stop the service without removing it:
+
+```bash
+docker compose stop
+```
+
+Start a previously stopped service:
+
+```bash
+docker compose start
+```
+
+Remove the service container and its Compose network:
+
+```bash
+docker compose down
+```
 
 ## Notes
-- If your printer is on the network, ensure the Docker container can access it.
-- For USB printers, additional configuration and permissions may be required.
-- Check logs with:
-  ```
-  docker logs swimpos-thermalprinter
-  ```
-- Stop the container with:
-  ```
-  docker stop swimpos-thermalprinter
-  ```
-- Remove the container with:
-  ```
-  docker rm swimpos-thermalprinter
-  ```
+
+- Network printers must be reachable from the Docker host and container.
+- USB printers require additional Docker device and permission configuration.
+- Application logs are available through `docker compose logs`; no source-code
+  changes are required to view them.
