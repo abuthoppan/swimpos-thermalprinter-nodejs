@@ -1,5 +1,52 @@
 const { ThermalPrinter, PrinterTypes, CharacterSet, BreakLine } = require('node-thermal-printer')
 const fs = require('fs');
+const net = require('net');
+
+// node-thermal-printer 4.4.1 sends network data but does not resolve its
+// Promise unless the printer sends a response.  Receipt printers normally do
+// not send one for a print job, which leaves the HTTP request open forever.
+// Resolve after Node has handed the complete buffer to the printer socket.
+function sendNetworkPrint(printer) {
+    const { host, port, timeout } = printer.Interface;
+    const buffer = printer.getBuffer();
+
+    return new Promise((resolve, reject) => {
+        let settled = false;
+
+        const complete = (error, result) => {
+            if (settled) return;
+            settled = true;
+            if (error) reject(error);
+            else resolve(result);
+        };
+
+        const networkConnection = net.createConnection({ host, port, timeout });
+
+        networkConnection.once('connect', () => {
+            networkConnection.write(buffer, (error) => {
+                if (error) {
+                    networkConnection.destroy();
+                    complete(error);
+                    return;
+                }
+
+                console.log(`Data sent to printer: ${host}:${port}`, buffer);
+                networkConnection.end();
+                complete(null, 'Data sent to printer');
+            });
+        });
+
+        networkConnection.once('error', (error) => {
+            networkConnection.destroy();
+            complete(error);
+        });
+
+        networkConnection.once('timeout', () => {
+            networkConnection.destroy();
+            complete(new Error('Socket timeout'));
+        });
+    });
+}
 
 async function thermalPrint(DATA, PRINTER_IP) {
     const printer = new ThermalPrinter({
@@ -75,6 +122,13 @@ async function thermalPrint(DATA, PRINTER_IP) {
         if (err) throw err;
         console.log('Saved!');
     });
+
+    // Network printers need the explicit send above; the dependency's network
+    // execute() Promise never settles for normal print jobs. Keep the library
+    // path for non-network interfaces (for example file or OS printers).
+    if (printer.Interface && printer.Interface.host) {
+        return sendNetworkPrint(printer);
+    }
 
     return printer.execute();
 
