@@ -18,7 +18,8 @@ and Docker service restart.
 3. Start or update the service:
 
    ```bash
-   docker compose up -d --build
+   docker build -t swimpos-thermalprinter:latest .
+   docker compose up -d
    ```
 
 4. Confirm that it is running:
@@ -47,7 +48,7 @@ On the development machine, from the project folder, build the image and save
 it as a portable archive:
 
 ```bash
-docker compose build
+docker build -t swimpos-thermalprinter:latest .
 docker save -o swimpos-thermalprinter.tar swimpos-thermalprinter:latest
 ```
 
@@ -69,12 +70,11 @@ DOCKER.md
    docker load -i swimpos-thermalprinter.tar
    ```
 
-4. Start the already-loaded image. The `--no-build` option is important: the
-   customer computer has the pre-built image and does not need the source code
-   or Dockerfile.
+4. Start the already-loaded image. The customer computer does not need the
+   source code or Dockerfile.
 
    ```bash
-   docker compose up -d --no-build
+   docker compose up -d
    ```
 
 5. Confirm that the service is running:
@@ -90,7 +90,7 @@ To upgrade later, provide a new `.tar` image and run:
 ```bash
 docker compose down
 docker load -i swimpos-thermalprinter.tar
-docker compose up -d --no-build
+docker compose up -d
 ```
 
 ## Migrating from the previous `docker run` command
@@ -107,7 +107,7 @@ existing printer-service container with the Compose-managed container:
 ```bash
 docker stop swimpos-thermalprinter
 docker rm swimpos-thermalprinter
-docker compose up -d --build
+docker compose up -d
 ```
 
 ## Automatic restart behavior
