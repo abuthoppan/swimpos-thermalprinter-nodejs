@@ -36,7 +36,7 @@ node cli.js --data <BASE64_ENCODED_JSON_STRING> --printerip tcp://<EPSON_THERMAL
 Example :
 
 `
-node cli.js --data <BASE64_ENCODED_JSON_STRING> --printerip tcp://192.168.192.168
+node cli.js --data eyJIZWFkbGluZSI6IlRob3BwYW5zJyBTd2ltbWluZyBDZW50cmVcbllNQ0EgY29tcGxleCwgVGhvZHVwdXpoYSIsIlRvIjoiQWJ1IFRob3BwYW4iLCJSZWZObyI6IjEyMzQ1NSIsIkRhdGVUaW1lIjpudWxsLCJJdGVtcyI6W1siMiB4IEl0ZW0gMSBAIDIzMCIsIjQ2MCJdLFsiNSB4IEl0ZW0gMiBAIDIwMCIsIjEwMDAiXV0sIlRvdGFsIjoiMTQ2MCIsIkRpc2NvdW50IjoiMTAwIiwiR3JhbmRUb3RhbCI6IjEzNjAifQ== --printerip tcp://192.168.192.168
 `
 
 Please not that the printerip parameter is optional. If not provided it will connect to `tcp://192.168.192.168` by default.
