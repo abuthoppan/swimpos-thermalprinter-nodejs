@@ -2,7 +2,7 @@ const parseArgs = require('minimist')
 const thermalPrinter = require('./thermalPrinter.js')
 
 /*const _DATA = {
-  "Location": "Pala",
+  "Headline": "Thoppans' Swimming Centre\nYMCA complex, Thodupuzha",
   "To": "Abu Thoppan",
   "RefNo": "123455",
   "DateTime": null,

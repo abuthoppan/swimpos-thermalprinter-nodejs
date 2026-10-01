@@ -88,10 +88,6 @@ async function thermalPrint(DATA, PRINTER_IP) {
 
     printHeadline(printer, DATA.Headline);
     printer.setTextNormal();
-    printer.bold(true);
-    if (DATA.Location)
-        printer.println(DATA.Location);
-    printer.bold(false);
 
     printer.alignLeft();
     printer.newLine();

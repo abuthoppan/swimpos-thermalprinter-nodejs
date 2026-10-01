@@ -130,7 +130,6 @@ Send a `POST` request to `http://localhost:3000/print`:
 {
   "data": {
     "Headline": "Thoppans' Swimming Centre\nYMCA complex, Thodupuzha",
-    "Location": "Demo Site",
     "Items": []
   },
   "printer_ip": "tcp://<EPSON_THERMAL_PRINTER_IP_ADDRESS>"

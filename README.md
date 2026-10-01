@@ -12,7 +12,7 @@ npm i
 Sample JSON Object :
 
 {
-  'Location': 'Pala',
+  'Headline': "Thoppans' Swimming Centre\nYMCA complex, Thodupuzha",
   'To': 'Abu Thoppan',
   'RefNo': '123455',
   'DateTime': null,
@@ -26,8 +26,7 @@ Sample JSON Object :
 
 2. Base64 Encode the JSON string
 
-```eyJMb2NhdGlvbiI6IlBhbGEiLCJUbyI6IkFidSBUaG9wcGFuIiwiUmVmTm8iOiIxMjM0NTUiLCJEYXRlVGltZSI6bnVsbCwiSXRlbXMiOltbIjIgeCBJdGVtIDEgQCAyMzAiLCI0NjAiXSxbIjUgeCBJdGVtIDIgQCAyMDAiLCIxMDAwIl1dLCJUb3RhbCI6IjE0NjAiLCJEaXNjb3VudCI6IjEwMCIsIkdyYW5kVG90YWwiOiIxMzYwIn0=
-```
+Use the Base64 encoding of the JSON object you prepared in step 1.
 3. Execute the script
 
 `
@@ -37,7 +36,7 @@ node cli.js --data <BASE64_ENCODED_JSON_STRING> --printerip tcp://<EPSON_THERMAL
 Example :
 
 `
-node cli.js --data eyJMb2NhdGlvbiI6IlBhbGEiLCJUbyI6IkFidSBUaG9wcGFuIiwiUmVmTm8iOiIxMjM0NTUiLCJEYXRlVGltZSI6bnVsbCwiSXRlbXMiOltbIjIgeCBJdGVtIDEgQCAyMzAiLCI0NjAiXSxbIjUgeCBJdGVtIDIgQCAyMDAiLCIxMDAwIl1dLCJUb3RhbCI6IjE0NjAiLCJEaXNjb3VudCI6IjEwMCIsIkdyYW5kVG90YWwiOiIxMzYwIn0= --printerip tcp://192.168.192.168
+node cli.js --data <BASE64_ENCODED_JSON_STRING> --printerip tcp://192.168.192.168
 `
 
 Please not that the printerip parameter is optional. If not provided it will connect to `tcp://192.168.192.168` by default.
